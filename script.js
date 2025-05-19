@@ -106,8 +106,21 @@ function renderChart() {
   });
 }
 
-// Fake API: random 50‑300 kcal
+/* ========= Nutrition lookup via API Ninjas ========= */
 async function fetchCalories(food) {
-  await new Promise(r => setTimeout(r, 300));
-  return Math.floor(Math.random() * 250) + 50;
+  const API_KEY = 'gHdGib1o0DAQtjDvnpHw6A==OxLaRpUYiR5CpNNR';   // ← your key
+  const url = `https://api.api-ninjas.com/v1/nutrition?query=${encodeURIComponent(food)}`;
+
+  try {
+    const res = await fetch(url, { headers: { 'X-Api-Key': API_KEY } });
+    if (!res.ok) throw new Error('Network error');
+
+    const data = await res.json();
+    if (data.length === 0) throw new Error('Food not found');
+
+    return Math.round(data[0].calories);
+  } catch (err) {
+    alert(`Couldn’t fetch calories (${err.message}). Using 100 kcal fallback.`);
+    return 100; // fallback so UX continues
+  }
 }
