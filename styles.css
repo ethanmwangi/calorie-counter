@@ -84,3 +84,14 @@ tfoot td { font-weight: 700; }
 }
 #theme-toggle:checked + .slider { background: var(--primary); }
 #theme-toggle:checked + .slider::before { transform: translateX(24px); }
+
+/* === Fix <select> contrast in dark mode === */
+body.dark select {
+  background-color: var(--card);
+  color: var(--text);
+}
+
+body.dark select option {
+  background-color: var(--card);
+  color: var(--text);
+}
