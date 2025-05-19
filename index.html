@@ -5,62 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calorie Counter</title>
 
-  <!-- Tailwind CDN -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css"
-    rel="stylesheet"
-  />
-  <!-- Your tweaks -->
   <link rel="stylesheet" href="styles.css" />
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js" defer></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
-  <h1 class="text-3xl font-bold mb-6">Calorie Counter</h1>
+<body>
+  <!-- 🌞 / 🌙 toggle -->
+  <label id="theme-label">
+    <input type="checkbox" id="theme-toggle" />
+    <span class="slider"></span>
+  </label>
 
-  <!-- ➕ Add‑food form -->
-  <form id="food-form" class="w-full max-w-md bg-white p-4 rounded shadow">
-    <div class="mb-3">
-      <label class="block font-medium mb-1" for="food-input">Food Item</label>
-      <input
-        id="food-input"
-        type="text"
-        required
-        class="w-full border rounded p-2"
-        placeholder="e.g. Banana"
-      />
+  <main class="container">
+    <h1>Calorie Counter</h1>
+
+    <!-- ➕  FORM -->
+    <form id="food-form" class="card">
+      <div class="field">
+        <label for="food-input">Food Item</label>
+        <input id="food-input" type="text" required placeholder="Banana" />
+      </div>
+
+      <div class="field">
+        <label for="cal-input">Calories</label>
+        <input id="cal-input" type="number" placeholder="Leave blank to auto‑fetch" />
+      </div>
+
+      <div class="field">
+        <label for="meal-select">Meal</label>
+        <select id="meal-select">
+          <option>Breakfast</option>
+          <option>Lunch</option>
+          <option>Dinner</option>
+          <option>Snack</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-primary">Add Food</button>
+    </form>
+
+    <!-- 🔍 Filter -->
+    <div class="filter">
+      <label for="filter-select">Filter:</label>
+      <select id="filter-select">
+        <option>All</option>
+        <option>Breakfast</option>
+        <option>Lunch</option>
+        <option>Dinner</option>
+        <option>Snack</option>
+      </select>
     </div>
 
-    <div class="mb-3">
-      <label class="block font-medium mb-1" for="cal-input">Calories</label>
-      <input
-        id="cal-input"
-        type="number"
-        class="w-full border rounded p-2"
-        placeholder="e.g. 105 (leave blank to auto‑fetch)"
-      />
+    <!-- 📋 Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Food</th>
+            <th>Meal</th>
+            <th>Calories</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="food-table-body"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">Total</td>
+            <td id="total-cell">0</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
 
-    <button
-      type="submit"
-      class="bg-emerald-600 hover:bg-emerald-700 text-white w-full py-2 rounded"
-    >
-      Add Food
-    </button>
-  </form>
+    <!-- 📊 Chart -->
+    <div class="chart-box">
+      <canvas id="cal-chart"></canvas>
+    </div>
 
-  <!-- 🔢 Total -->
-  <div id="total-display" class="my-6 text-xl font-semibold">Total: 0 kcal</div>
-
-  <!-- 📋 Food list -->
-  <ul id="food-list" class="w-full max-w-md space-y-2"></ul>
-
-  <!-- ♻️ Reset -->
-  <button
-    id="reset-btn"
-    class="mt-6 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-  >
-    Reset Day
-  </button>
+    <!-- ♻️ Reset -->
+    <button id="reset-btn" class="btn-danger">Reset Day</button>
+  </main>
 </body>
 </html>

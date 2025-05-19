@@ -1,40 +1,43 @@
-// script.js
+/* ========= DOM ========= */
 const form         = document.getElementById('food-form');
 const foodInput    = document.getElementById('food-input');
 const calInput     = document.getElementById('cal-input');
-const list         = document.getElementById('food-list');
-const totalDisplay = document.getElementById('total-display');
+const mealSelect   = document.getElementById('meal-select');
+const tableBody    = document.getElementById('food-table-body');
+const totalCell    = document.getElementById('total-cell');
+const filterSelect = document.getElementById('filter-select');
 const resetBtn     = document.getElementById('reset-btn');
+const themeToggle  = document.getElementById('theme-toggle');
+const chartCanvas  = document.getElementById('cal-chart');
 
-// Load from localStorage or start empty
+let chart;
+
+/* ========= State ========= */
 let foods = JSON.parse(localStorage.getItem('foods')) || [];
 renderAll();
 
-/* ----------  Events ---------- */
+/* ========= Events ========= */
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-
-  const name = foodInput.value.trim();
+  const name  = foodInput.value.trim();
+  const meal  = mealSelect.value;
   let calories = parseInt(calInput.value);
 
-  // If calories left blank, fetch a random value (simulated API)
-  if (!calories) {
-    calories = await fetchCalories(name);
-  }
+  if (!calories) calories = await fetchCalories(name);
 
-  const item = { id: Date.now(), name, calories };
-  foods.push(item);
+  foods.push({ id: Date.now(), name, calories, meal });
   saveAndRender();
   form.reset();
 });
 
-list.addEventListener('click', (e) => {
+tableBody.addEventListener('click', (e) => {
   if (e.target.dataset.id) {
-    const id = Number(e.target.dataset.id);
-    foods = foods.filter(f => f.id !== id);
+    foods = foods.filter(f => f.id !== Number(e.target.dataset.id));
     saveAndRender();
   }
 });
+
+filterSelect.addEventListener('change', renderAll);
 
 resetBtn.addEventListener('click', () => {
   if (confirm('Start a new day?')) {
@@ -43,37 +46,67 @@ resetBtn.addEventListener('click', () => {
   }
 });
 
-/* ----------  Helpers ---------- */
+themeToggle.addEventListener('change', () => {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme', themeToggle.checked ? 'dark' : 'light');
+});
+
+/* ========= Theme init ========= */
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+  themeToggle.checked = true;
+}
+
+/* ========= Functions ========= */
 function saveAndRender() {
   localStorage.setItem('foods', JSON.stringify(foods));
   renderAll();
 }
 
 function renderAll() {
-  list.innerHTML = '';
+  const filter = filterSelect.value;
+  const visible = filter === 'All' ? foods : foods.filter(f => f.meal === filter);
+
+  // --- Table ---
+  tableBody.innerHTML = '';
   let total = 0;
 
-  foods.forEach(({ id, name, calories }) => {
+  visible.forEach(({ id, name, meal, calories }) => {
     total += calories;
 
-    const li = document.createElement('li');
-    li.className =
-      'flex justify-between items-center bg-white p-3 rounded shadow';
-
-    li.innerHTML = `
-      <span>${name}
-        <span class="text-sm text-gray-500">(${calories} kcal)</span>
-      </span>
-      <button data-id="${id}" class="text-red-500 hover:text-red-700">✖</button>
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${name}</td>
+      <td>${meal}</td>
+      <td>${calories}</td>
+      <td><button class="delete-btn" data-id="${id}">✖</button></td>
     `;
-
-    list.appendChild(li);
+    tableBody.appendChild(row);
   });
+  totalCell.textContent = total;
 
-  totalDisplay.textContent = `Total: ${total} kcal`;
+  // --- Chart ---
+  renderChart();
 }
 
-// Fake Fetch API – returns random 50‑300 kcal after 300 ms
+function renderChart() {
+  const mealTotals = foods.reduce((acc, { meal, calories }) => {
+    acc[meal] = (acc[meal] || 0) + calories;
+    return acc;
+  }, {});
+
+  const labels = Object.keys(mealTotals);
+  const data   = Object.values(mealTotals);
+
+  if (chart) chart.destroy();
+  chart = new Chart(chartCanvas, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data }] },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+}
+
+// Fake API: random 50‑300 kcal
 async function fetchCalories(food) {
   await new Promise(r => setTimeout(r, 300));
   return Math.floor(Math.random() * 250) + 50;

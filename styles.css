@@ -1,5 +1,86 @@
-/* styles.css */
-/* Extra tweaks on top of Tailwind (keep minimal) */
-#food-list li {
-  @apply flex justify-between items-center bg-white p-3 rounded shadow;
+/* ===== Root theme variables ===== */
+:root {
+  --bg: #f4f4f4;
+  --text: #222;
+  --card: #ffffff;
+  --card-border: #ddd;
+  --primary: #16a34a;
+  --danger: #e11d48;
 }
+body.dark {
+  --bg: #1f1f1f;
+  --text: #f4f4f4;
+  --card: #2b2b2b;
+  --card-border: #444;
+  --primary: #22c55e;
+  --danger: #f87171;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+/* Container */
+.container { max-width: 780px; margin: auto; padding: 2rem; }
+
+/* Heading */
+h1 { text-align: center; margin-bottom: 1.5rem; }
+
+/* Card (form) */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+.field input, .field select {
+  width: 100%; padding: 0.5rem; border: 1px solid var(--card-border);
+  border-radius: 0.5rem; background: transparent; color: inherit;
+}
+
+/* Buttons */
+.btn-primary, .btn-danger {
+  width: 100%; padding: 0.6rem; border: none; border-radius: 0.6rem;
+  color: #fff; font-size: 1rem; cursor: pointer;
+}
+.btn-primary { background: var(--primary); }
+.btn-danger  { background: var(--danger); margin-top: 2rem; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-danger:hover  { opacity: 0.9; }
+
+/* Filter */
+.filter { margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center; }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.6rem; text-align: left; border-bottom: 1px solid var(--card-border); }
+th { background: var(--card); }
+tfoot td { font-weight: 700; }
+.delete-btn {
+  background: transparent; border: none; color: var(--danger); font-size: 1.1rem;
+  cursor: pointer;
+}
+
+/* Chart */
+.chart-box { margin-top: 2rem; }
+
+/* ===== Theme toggle switch ===== */
+#theme-label {
+  position: fixed; top: 1rem; right: 1rem; width: 55px; height: 28px;
+  display: inline-block; cursor: pointer;
+}
+#theme-label input { display: none; }
+.slider {
+  position: absolute; inset: 0; background: var(--card-border); border-radius: 999px;
+  transition: background 0.3s;
+}
+.slider::before {
+  content: ''; position: absolute; top: 3px; left: 4px; width: 22px; height: 22px;
+  background: #fff; border-radius: 50%; transition: transform 0.3s;
+}
+#theme-toggle:checked + .slider { background: var(--primary); }
+#theme-toggle:checked + .slider::before { transform: translateX(24px); }
