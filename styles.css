@@ -1,0 +1,5 @@
+/* styles.css */
+/* Extra tweaks on top of Tailwind (keep minimal) */
+#food-list li {
+  @apply flex justify-between items-center bg-white p-3 rounded shadow;
+}
