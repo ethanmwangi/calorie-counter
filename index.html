@@ -1,90 +1,74 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calorie Counter</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calorie Tracker</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js" defer></script>
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <!-- 🌞 / 🌙 toggle -->
-  <label id="theme-label">
-    <input type="checkbox" id="theme-toggle" />
-    <span class="slider"></span>
-  </label>
+  <header>
+    <h1>🥗 Calorie Tracker</h1>
+    <label class="theme-switch">
+      🌞
+      <input type="checkbox" id="theme-toggle" />
+      🌙
+    </label>
+  </header>
 
-  <main class="container">
-    <h1>Calorie Counter</h1>
-
-    <!-- ➕  FORM -->
-    <form id="food-form" class="card">
-      <div class="field">
-        <label for="food-input">Food Item</label>
-        <input id="food-input" type="text" required placeholder="Banana" />
-      </div>
-
-      <div class="field">
-        <label for="cal-input">Calories</label>
-        <input id="cal-input" type="number" placeholder="Leave blank to auto‑fetch" />
-      </div>
-
-      <div class="field">
-        <label for="meal-select">Meal</label>
-        <select id="meal-select">
-          <option>Breakfast</option>
-          <option>Lunch</option>
-          <option>Dinner</option>
-          <option>Snack</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn-primary">Add Food</button>
+  <main>
+    <form id="food-form">
+      <input type="text" id="food-name" placeholder="Enter food" required />
+      <input type="number" id="food-calories" placeholder="Calories (optional)" />
+      <select id="meal-type">
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Dinner">Dinner</option>
+        <option value="Snack">Snack</option>
+      </select>
+      <button type="submit">➕ Add Food</button>
     </form>
 
-    <!-- 🔍 Filter -->
-    <div class="filter">
-      <label for="filter-select">Filter:</label>
-      <select id="filter-select">
-        <option>All</option>
-        <option>Breakfast</option>
-        <option>Lunch</option>
-        <option>Dinner</option>
-        <option>Snack</option>
+    <section class="filter-controls">
+      <label for="filter-meal">Filter by Meal:</label>
+      <select id="filter-meal">
+        <option value="All">All</option>
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Dinner">Dinner</option>
+        <option value="Snack">Snack</option>
       </select>
-    </div>
+      <button id="reset-btn">🔄 Reset Day</button>
+    </section>
 
-    <!-- 📋 Table -->
-    <div class="table-wrap">
+    <section class="table-section">
       <table>
         <thead>
           <tr>
             <th>Food</th>
             <th>Meal</th>
             <th>Calories</th>
-            <th>Delete</th>
+            <th>Remove</th>
           </tr>
         </thead>
         <tbody id="food-table-body"></tbody>
         <tfoot>
           <tr>
-            <td colspan="2">Total</td>
-            <td id="total-cell">0</td>
+            <td colspan="2"><strong>Total</strong></td>
+            <td id="total-calories">0</td>
             <td></td>
           </tr>
         </tfoot>
       </table>
-    </div>
+    </section>
 
-    <!-- 📊 Chart -->
-    <div class="chart-box">
-      <canvas id="cal-chart"></canvas>
-    </div>
-
-    <!-- ♻️ Reset -->
-    <button id="reset-btn" class="btn-danger">Reset Day</button>
+    <section class="chart-container">
+      <canvas id="calorie-chart"></canvas>
+    </section>
   </main>
 </body>
 </html>
+
